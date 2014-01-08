@@ -2,8 +2,8 @@ Video-Übungsaufgabe 5 (2) Einfaches Key/Blend mit DirectShow / C++
 
 	Umsetzung:
 		OpenCV 2.3.1
-		C++ 4.7.3
-		Xubuntu 12.04 / 64 Btit
+		C++ / g++ 4.7.3
+		Xubuntu 12.04 / 64 Bit
 
 	File:
 		differenz_codierung/src/key_blend/key_blend.cpp
@@ -20,8 +20,8 @@ Video-Übungsaufgabe 5 (3) Differenzcodierung
 	
 	Umsetzung:
 		OpenCV 2.3.1
-		C++ 4.7.3
-		Xubuntu 12.04 / 64 Btit
+		C++ / g++ 4.7.3
+		Xubuntu 12.04 / 64 Bit
 
 	1) Pixelweise Differenz zweier Bilder im Ergebnisbild
 	2) Quantisierung der Differenzen (Teilen durch Parameter Q)
