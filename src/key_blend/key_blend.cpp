@@ -27,6 +27,11 @@ int main(int argc, char* argv[])
     {
         alpha = atof(argv[2]); 
     }
+    else 
+    {
+        cout << "ERROR: alpha must be > 0.0 && < 1.0"
+        return -1;
+    }
 
     // read image ( same size, same type )
     img = imread(argv[1]);

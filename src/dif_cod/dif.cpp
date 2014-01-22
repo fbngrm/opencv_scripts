@@ -1,5 +1,7 @@
-#include "opencv2/highgui/highgui.hpp"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
+#include <cstdlib>
 
 using namespace cv;
 using namespace std;
@@ -36,9 +38,9 @@ Mat& reduce(Mat& frame, int q) {
     p = frame.ptr<uchar>(i);
     for ( j = 0; j < nCols; j+=3)
     {
-      b = p[j]/q;
-      g = p[j+1]/q;
-      r = p[j+2]/q;
+      b = abs(p[j]/q);
+      g = abs(p[j+1]/q);
+      r = abs(p[j+2]/q);
 
       p[j] = b;
       p[j+1] = g;
@@ -48,12 +50,54 @@ Mat& reduce(Mat& frame, int q) {
 return frame;
 }
 
+Mat& dif(Mat& frame) {
+  int channels = frame.channels();
+
+  int nRows = frame.rows;
+  int nCols = frame.cols * channels;
+  unsigned char y;
+
+  if (frame.isContinuous())
+  {
+    nCols *= nRows;
+    nRows = 1;
+  }
+
+  int i,j;
+  uchar* p;
+  for( i = 0; i < nRows; ++i)
+  {
+    p = frame.ptr<uchar>(i);
+    for ( j = 0; j < nCols; j+=3)
+    {
+      y = p[j]+128%255;
+
+      p[j] = y;
+      p[j+1] = y;
+      p[j+2] = y;
+    }
+  }
+
+return frame;
+}
 int main(int argc, char* argv[])
 {
 
-  if (argc<3) {
+  if (argc<4) {
     cout << "not enough arguments supplied!" << endl;
+    cout << "use: ./dif video_file_to_read.avi video_file_to_save 0-64" << endl;
     return -1;
+  }
+
+  int alpha = 0;
+  if(atof(argv[3])>=0 && atof(argv[3])<=64) 
+  {
+      alpha = atof(argv[3]); 
+  }
+  else 
+  {
+      cout << "ERROR: q must be > 0 && <= 64";
+      return -1;
   }
 
   VideoCapture cap(argv[1]); 
@@ -91,11 +135,12 @@ int main(int argc, char* argv[])
       break;
     }
 
-    Mat dif = frame-prev_frame;
-    imshow("differenzbild", dif);
+    Mat dif_mat = frame - prev_frame;
+    dif(dif_mat);
+    imshow("differenzbild", dif_mat);
     //oVideoWriter.write(dif);
 
-    Mat dif_red = reduce(dif, 2);
+    Mat dif_red = reduce(dif_mat, alpha);
     imshow("quantisiertes differenzbild", dif_red);
 
     prev_frame = frame.clone();
